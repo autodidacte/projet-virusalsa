@@ -1,0 +1,76 @@
+{# app/Resources/views/layout.html.twig #}
+{# template pere #}
+{# Enregistrer des block vide {% block nom_block %} on peut luit donner une valeur par defaut {% endblock %} #}
+{# Création du bloc « title » avec « Sdz » comme contenu par défaut // appel du CSS situé dans /web/css/bootstrap.css ;
+Utilisation de la fonction {{ path }} pour faire des liens vers d'autres routes; Création du bloc « body » sans contenu par défaut.
+ #}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+		<title>{% block title %}Sdz{% endblock %}</title>
+<!-- jsquery -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        
+		{% block stylesheets %}
+			<link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" />
+		{% endblock %}
+	</head>
+
+	<body>
+	
+		<div class="container">
+			<div id="header" class="hero-unit">
+				<h1>Mon Projet Symfony2</h1>
+				<p>Ce projet est propulsé par Symfony2, et construit grâce au tutoriel du siteduzero.</p>
+				<p><a class="btn btn-primary btn-large" href="http://www.siteduzero.com/tutoriel-3-517569-symfony2.html">
+					Lire le tutoriel &raquo;
+				</a></p>
+{# app/Resources/views/layout.html.twig #}
+{# IS_AUTHENTICATED_REMEMBERED correspond à un utilisateur qui s'est identifié en rentrant son mot de passe,
+   ou à un utilisateur qui s'est identifié automatiquement grâce à son cookie remember_me #}
+{# On pourrait utiliser IS_AUTHENTICATED_FULLY qui correspond à un utilisateur qui s'est forcément
+   identifié en rentrant son mot de passe (utile pour les opérations sensibles comme changer d'email #}
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+   <p> Connecté en tant que {{ app.user.username }} - <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></p>
+{% else %}
+    <p><a href="{{ path('fos_user_security_login') }}">Connexion</a></p>
+{% endif %}
+</p>
+			</div>
+
+			<div class="row">
+				<div id="menu" class="span3">
+					<h3>Le blog</h3>
+					<ul class="nav nav-pills nav-stacked">
+						<li><a href="{{ path('sdzblog_accueil') }}">Accueil du blog</a></li>
+						<li><a href="{{ path('article') }}">Gérer les articles</a></li>
+						{% if is_granted('ROLE_AUTEUR') %}
+						<li><a href="{{ path('sdzblog_ajouter') }}">Ajouter un article</a></li>
+						{% endif %}
+					</ul>
+				</div>
+				<div id="content" class="span9">
+					{% block body %}
+					{% endblock %}
+				</div>
+			</div>
+
+			<hr>
+
+			<footer>
+				<p>The sky's the limit &copy; 2012 and beyond.</p>
+                        </footer>
+		</div>
+            {{ tinymce_init() }}
+	</body>
+
+	{% block javascripts %}
+		{# Ajoutez ce javascript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
+		<script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
+	{% endblock %}
+
+</html>

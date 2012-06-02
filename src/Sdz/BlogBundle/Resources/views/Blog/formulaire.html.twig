@@ -1,0 +1,88 @@
+
+
+
+{# src/Sdz/BlogBundle/Resources/views/Blog/formulaire.html.twig #}
+
+{# Cette vue n'hérite de personne, elle sera inclue par d'autres vues qui, elles, hériteront sûrement du layout. #}
+{# Je dis "sûrement" car, ici pour cette vue, on n'en sait rien et c'est une info qui ne nous concerne pas. #}
+
+<h3>Formulaire d'article</h3>
+
+{# Ici on laisse vide la vue pour l'instant, on la comblera plus tard lorsque saura afficher un formulaire. #}
+<div class="well">
+	Ici se trouvera le formulaire.
+<h1>Article creation</h1>
+<div id="formulaire_sdz">
+<form method="post" {{ form_enctype(form) }}>
+
+<!-- Les erreurs générales du formulaire. -->
+{{ form_errors(form) }}
+
+<div>
+    <!-- Génération du label. -->
+    {{ form_label(form.titre, "Titre de l'article") }}
+
+    <!-- Affichage des erreurs pour ce champ précis. -->
+    {{ form_errors(form.titre) }}
+
+    <!-- Génération de l'input. -->
+    {{ form_widget(form.titre) }}
+</div>
+
+<!-- Idem pour un autre champ. -->
+<div id="formulaire_contenu">
+    {{ form_label(form.contenu, "Contenu de l'article") }}
+    {{ form_errors(form.contenu) }}
+    {{ form_widget(form.contenu) }}
+</div>
+
+<!-- Génération des champs pas encore écrits.
+     Dans cet exemple, ça serait « date », « auteur » et « tags »,
+     mais aussi le champ CSRF (géré automatiquement par Symfony !)
+     et tous les champs cachés (type « hidden »). -->
+{{ form_rest(form) }}
+ 
+ <!-- Ajout d'un lien pour ajouter un champ tag supplémentaire. -->
+<a href="#" id="add_tag">Ajouter un tag</a>
+
+<!-- On charge la librairie jQuery. Ici, je la prends depuis le site jquery.com, mais si vous l'avez en local, changez simplement l'adresse. -->
+<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    // On récupère la balise <div> en question qui contient l'attribut « data-prototype » qui nous intéresse.
+    var $container = $('#sdz_blogbundle_articletype_tags');
+	
+    // On définit une fonction qui va ajouter un champ.
+    function add_tag() {
+        // On définit le numéro du champ (en comptant le nombre de champs déjà ajoutés).
+        index = $container.children().length;
+
+        // On ajoute à la fin de la balise <div> le contenu de l'attribut « data-prototype »,
+        // après avoir remplacé la variable $$name$$ qu'il contient par le numéro du champ.
+        $container.append(
+            $($container.attr('data-prototype').replace(/\$\$name\$\$/g, index))
+        );
+    }
+	
+    // On ajoute un premier champ directement s'il n'en existe pas déjà un.
+    if($container.children().length == 0) {
+        add_tag();
+    }
+	
+    // On ajoute un nouveau champ à chaque clic sur le lien d'ajout.
+    $('#add_tag').click(function() {
+        add_tag();
+    });
+});
+</script>
+
+ 
+ <p>
+        <button type="submit">Create</button>
+    </p>
+</form>
+</div>
+	
+	</div>
+ 

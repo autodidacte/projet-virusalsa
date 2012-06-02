@@ -1,0 +1,31 @@
+{# src/Sdz/BlogBundle/Resources/views/Blog/voir.html.twig #}
+{# liste des teste (si varible existe etc.) des filtre (texte en majuscule) :http://www.twig-project.org/doc/templates.html#list-of-built-in-filters #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bienvenue sur ma première page avec le Site du Zéro !</title>
+    </head>
+    <body>
+        <h1>Lecture d'un article</h1>
+		{# syntaxe d ecriture d une variable #}
+		{% set pseudo = 'jeanluc' %}
+		{# verifier qu une variable existe #}
+		{% if pseudo is defined %}
+    La variable pseudo existe <br>
+{% endif %}
+		{# syntaxe d une condition {% ......%} donnee protege {% endif %} #}
+		{% if pseudo == 'jeanluc' %}
+    OK accès autorisé <br>
+{% endif %}
+	{# syntaxe d edition d une variable {{ var }} filtre en option a inserer apres la barre | #}
+		Pseudo en lettres majuscules : {{ pseudo|upper }} <br>
+		{#Recuperation de la date au format datetime avec "now" + ajout de filtre date ()#}
+		{{ "now"|date('d/m/y') }}.
+ 
+
+        <p>
+            Ici nous pourrons lire l'article ayant comme id : {{ id }}<br />
+            Mais pour l'instant nous ne savons pas encore le faire, cela viendra !
+        </p>
+    </body>
+</html>

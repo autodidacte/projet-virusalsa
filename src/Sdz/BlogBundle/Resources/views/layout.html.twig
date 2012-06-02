@@ -1,0 +1,27 @@
+{# src/Sdz/BlogBundle/Resources/views/layout.html.twig #}
+
+{% extends "::layout.html.twig" %}
+
+{% block title %}
+	Blog - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+	{# On définit un sous-titre commun à toutes les pages du bundle, par exemple #}
+	<h1>Blog</h1>
+
+	<hr>
+
+	{# On gère les messages flash de façon global pour tout le bundle #}
+	{% for key, flash in app.session.getFlashes() %}
+		<div class="alert alert-{{ key }}">
+			{{ flash }}
+		</div>
+	{% endfor %}
+
+	{# On définit un nouveau block, que les vues du bundle pourront étendre #}
+	{% block sdzblog_body %}
+	{% endblock %}
+
+{% endblock %}

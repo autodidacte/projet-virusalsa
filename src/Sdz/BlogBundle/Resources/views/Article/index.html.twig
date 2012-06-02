@@ -1,0 +1,85 @@
+{# src/Sdz/BlogBundle/Resources/views/Article/index.html.twig #}
+
+{% extends "SdzBlogBundle::layout.html.twig" %}
+
+{% block title %}
+	Gestion articles - {{ parent() }}
+{% endblock %}
+
+{% block sdzblog_body %}
+<h1>Article list</h1>
+
+<table class="records_list" >
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Titre</th>
+            <th>Contenu</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td name="id"><a href="{{ path('article_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+            <td name="date">{% if entity.date %}{{ entity.date|date('Y-m-d H:i:s') }}{% endif%}</td>
+            <td name="titre">{{ entity.titre }}</td>
+            <td name="contenu">{{ entity.contenu }}</td>
+            <td name="action">
+                <ul>
+                    <li>
+                        <a href="{{ path('article_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+					
+                    <li>
+                        <a href="{{ path('article_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    {% endfor %}
+	</tbody>
+</table>
+	<br><h1>Recuperation d un entity par appel d une function personnel</h1>
+	<table class="records_list" >
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Titre</th>
+            <th>Contenu</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+	{% for liste_article in liste_articles %}
+        <tr>
+            <td name="id"><a href="{{ path('article_show', { 'id': liste_article.id }) }}">{{ liste_article.id }}</a></td>
+            <td name="date">{% if liste_article.date %}{{ liste_article.date|date('Y-m-d H:i:s') }}{% endif%}</td>
+            <td name="titre">{{ liste_article.titre }}</td>
+            <td name="contenu">{{ liste_article.contenu }}</td>
+            <td name="action">
+                <ul>
+                    <li>
+                        <a href="{{ path('article_show', { 'id': liste_article.id }) }}">show</a>
+                    </li>
+					
+                    <li>
+                        <a href="{{ path('article_edit', { 'id': liste_article.id }) }}">edit</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li>
+        <a href="{{ path('article_new') }}">
+            Create a new entry
+        </a>
+    </li>
+</ul>
+{% endblock %}

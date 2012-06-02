@@ -1,0 +1,160 @@
+Creation d un service dans le container 
+annexe: 
+- Liste des methode contenu dans l extension twig : http://twig.sensiolabs.org/doc/extensions.html
+- Liste Bundle en telechargement: http://knpbundles.com/
+*/ recuperer un service dans un fichier container
+- $this->$container->get('mailer');
+
+*/ Creer un service
+- Creation d un dossier service dans le bundle
+- creation de la class du service
+<?php
+// src/Sdz/BlogBundle/Service/SdzAntispam.php
+
+namespace Sdz\BlogBundle\Service;
+
+/**
+ * Un anti-spam simple pour Symfony2.
+ *
+ * @author Leglopin
+ */
+class SdzAntispam
+{
+// On y met ce que l on veut a l interieur
+}
+
+*/ Declaration du nouveau service a symfony on le configurant dans le fichier du bundle ressources/conf/services.yml
+services:
+    sdz_blog.antispam: // Nom du service (nomapplication_nombundle.nomservice)
+        class: Sdz\BlogBundle\Service\SdzAntispam (namespace du service)
+
+Remarque: A l interieur de ce meme fichier service, il est possible de definir des parametre avec la methode suivante:
+parameters:
+    mon_parametre: ma_valeur
+Son appel se fera de la facon suivante:
+$container->getParameter($parametre)
+
+*/ Class de la fonction pour interargir avec le controleur
+class SdzAntispam {
+public function isSpam($text)
+    {
+        if( ($this->countLinks($text) + $this->countMails($text)) >= 3 )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+*/ Syntaxe d utilisation du service dans le controller
+public function indexAction()
+    {
+       $text = 'http://virusalsa.com , http://virusalsa.com , http://virusalsa.com';
+		 $antispam = $this->container->get('sdz_blog.antispam');
+
+        if( $antispam->isSpam($text) )
+        {
+            exit('Votre message a été détecté comme spam !');
+        }
+    	
+        return $this->render('SdzBlogBundle:Blog:index.html.twig');
+    }
+
+*/ Integration des Tag dans un service
+1/ Tag twig afin de pouvoir executer le service dans un fichier twig
+Configuration du services:
+    sdz_blog.antispam:
+        class: Sdz\BlogBundle\Service\SdzAntispam
+        tags:
+            -  { name: twig.extension }
+			
+Adaptation du fichier service:
+class SdzAntispam extends \Twig_Extension // rajout de l extends twig pour l utiliser depuis un fichier twig
+{
+    // La méthode getName(), obligatoire
+    public function getName()
+    {
+        return 'SdzAntispam';
+    }
+	
+    // La méthode getFunctions(), qui retourne un tableau avec les fonctions qui peuvent être appelées depuis cette extension
+    public function getFunctions()
+    {
+        return array(
+            'antispam_check' => new \Twig_Function_Method($this, 'isSpam') 
+        );
+
+        // 'antispam_check' est le nom de la fonction qui sera disponible sous Twig
+        // 'new \Twig_Function_Method($this, 'isSpam') ' est la façon de dire que cette fonction va exécuter notre méthode isSpam ci-dessous
+    }
+	
+    /**
+     * Vérifie si le texte est un spam ou non.
+     * Un texte est considéré comme spam à partir de 3 liens
+     * ou adresses e-mails dans son contenu.
+     * 
+     * @param string $text
+     */
+    public function isSpam($text)
+    {
+        if( ($this->countLinks($text) + $this->countMails($text)) >= 3 )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+*/ Les types de champs de formulaire
+- Pour déclarer un type de champ, il faut utiliser le tag form.type et indiquer un alias
+
+*/ Configuration du service
+services:
+    sdz_blog.ckeditor:
+        class:        Sdz\BlogBundle\Form\Extension\CkeditorType
+        tags:
+            - { name: form.type, alias: ckeditor }
+
+*/ Creation de l entite dans un fichier Extension de Form
+// src/Sdz/BlogBundle/Form/Extension/CkeditorType.php
+
+/**
+ * Type de champ de formulaire pour CKEditor.
+ *
+ * @author Leglopin
+ */
+namespace Sdz\BlogBundle\Form\Extension;
+
+use Symfony\Component\Form\AbstractType;
+
+class CkeditorType extends AbstractType 
+{
+    public function getParent(array $options) 
+    {
+        return 'textarea';
+    }
+
+    public function getName()
+    {
+        return 'ckeditor';
+    }
+    
+    public function getDefaultOptions(array $options)
+    {    	
+    	$defaultOptions = parent::getDefaultOptions($options);
+    	$defaultOptions['attr']['class'] = 'ckeditor';
+    	
+    	return $defaultOptions;
+    }
+}
+
+Descriptif du code :Vous venez de déclarer le type ckeditor (nom de l'alias). Ce type hérite de toutes les fonctionnalités d'un textarea (grâce à la méthode getParent()) tout en disposant de la classe CSS ckeditor (définie dans la méthode getDefaultOptions()) vous permettant, en ajoutant CKEditor à votre site, de transformer vos textarea en éditeur WYSIWYG. Pour l'utiliser, modifiez vos FormType pour utiliser 'ckeditor' à la place de 'textarea'. Par exemple, dans notre ArticleType :
+ 
+
+*/ Modification du fichier de Form (ArticleType.php)
+// On remplace simplement le type textarea par le type ckeditor
+                ->add('contenu', 'ckeditor')

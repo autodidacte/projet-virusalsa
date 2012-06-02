@@ -1,0 +1,45 @@
+{# src/Sdz/BlogBundle/Resources/views/Blog/index.html.twig #}
+{# Utilisation d un template pere layout #}
+{# Recupezration de la valeur par defaut du parent avec la methode parent () #}
+{# src/Sdz/BlogBundle/Resources/views/Blog/index.html.twig #}
+
+{# src/Sdz/BlogBundle/Resources/views/Blog/index.html.twig #}
+
+{% extends "SdzBlogBundle::layout.html.twig" %}
+
+{% block title %}
+	Accueil - {{ parent() }}
+{% endblock %}
+
+{% block sdzblog_body %}
+
+	<h2>Liste des articles</h2>
+	
+	<ul>
+		{% for article in articles %}
+			{% set text = article.contenu %}
+			<li>
+				<a href="{{ path('sdzblog_voir', {'id': article.id}) }}">{{ article.titre }}</a>
+				{% if antispam_check (text) == true %}
+				<span style="color:red">Contenu identifie comme spam</span>
+				{% endif %}
+				par {{ article.auteur }},
+				le {{ article.date|date('d/m/Y') }}
+			</li>
+		{% else %}
+			<li>Pas (encore !) d'articles</li>
+		{% endfor %}
+	</ul>
+    
+	<div class="pagination">
+    	<ul>
+    		{# On utilise la fonction range(a, b) qui crée un tableau de valeurs entre a et b. Elle s arrete lorsque la valeur limite est atteinte. #}
+    		{% for p in range(1, nb_pages) %}
+    			<li{% if p == page %} class="active"{% endif %}>
+    				<a href="{{ path('sdzblog_accueil', {'page': p}) }}">{{ p }}</a>
+    			</li>
+    		{% endfor %}
+    	</ul>
+    </div>
+
+{% endblock %}

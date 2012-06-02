@@ -1,0 +1,29 @@
+{# src/Sdz/BlogBundle/Resources/views/Blog/ajouter.html.twig #}
+
+{% extends "SdzBlogBundle::layout.html.twig" %}
+
+{% block title %}
+	Ajouter un article - {{ parent() }}
+{% endblock %}
+
+{% block sdzblog_body %}
+
+	<h2>Ajouter un article</h2>
+
+	{% include "SdzBlogBundle:Blog:formulaire.html.twig" %}
+
+	<p>
+		Vous ajoutez un article,
+		vérifiez s il n est pas déjà existant pour éviter
+		aux membres de ne pas comprendre
+		ce qu'il se passe.
+	</p>
+
+	<p>
+		<a href="{{ path('sdzblog_accueil') }}" class="btn">
+			<i class="icon-chevron-left"></i>
+			Retour à l'accueil
+		</a>
+	</p>
+
+{% endblock %}

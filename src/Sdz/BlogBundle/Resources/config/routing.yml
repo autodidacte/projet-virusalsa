@@ -1,0 +1,50 @@
+# src/sdz/BlogBundle/Resources/config/routing.yml
+
+BybyTheWorld:
+    pattern:  /byby-world
+    defaults: { _controller: SdzBlogBundle:Blog:byby }
+
+sdzblog_test:
+    pattern: /test
+    defaults: {_controller:SdzBlogBundle:Blog:test}
+
+#les paramettres peuvent etre separe puar un '.' ou '/'
+#requirements permet de restreinde la valeur des donnees par un controle par expession reguliere
+#dans defaut le deuxieme parametre permet de rendre facultatif la donnee dans l url en lui donnant une valeur par defaut
+
+sdzblog_voir_slug:
+    pattern:  /{annee}/{slug}.{format}
+    defaults:  { _controller: SdzBlogBundle:Blog:voirSlug, format: html }
+    requirements:
+        annee:  \d{4}
+        format: html|xml
+
+sdzblog_accueil:
+    pattern:   /{page}
+    defaults:  { _controller: SdzBlogBundle:Blog:index, page: 1 }
+    requirements:
+        page:  \d+
+    
+sdzblog_voir:
+    pattern: /article/{id}
+    defaults:  { _controller: SdzBlogBundle:Blog:voir }
+    
+sdzblog_ajouter:
+    pattern:   /ajouter
+    defaults:  { _controller: SdzBlogBundle:Blog:ajouter }
+
+sdzblog_modifier:
+    pattern:   /modifier/{id}
+    defaults:  { _controller: SdzBlogBundle:Blog:modifier }
+    requirements:
+        id:  \d+
+
+sdzblog_supprimer:
+    pattern:   /supprimer/{id}
+    defaults:  { _controller: SdzBlogBundle:Blog:supprimer }
+    requirements:
+        id:  \d+
+
+sdzblog_crud:
+    resource: "routing/article.yml"
+    prefix:   /crud

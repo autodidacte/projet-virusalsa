@@ -1,0 +1,13 @@
+parameters:
+#    sdz_blog.example.class: Sdz\BlogBundle\Example
+
+services:
+#    sdz_blog.example:
+#        class: %sdz_blog.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+services:
+    sdz_blog.antispam:
+        class: Sdz\BlogBundle\Service\SdzAntispam
+        tags:
+            -  { name: twig.extension }

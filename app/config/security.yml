@@ -1,0 +1,36 @@
+security:
+    encoders:
+            "FOS\UserBundle\Model\UserInterface": sha512
+
+    role_hierarchy:
+        ROLE_ADMIN:       [ROLE_AUTEUR, ROLE_MODERATEUR]       # On a dit que l'admin héritait des droits d'auteur et de modérateur
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH] # On garde ce rôle superadmin, il nous resservira par la suite 
+
+    providers:
+        fos_userbundle:
+            id: fos_user.user_manager
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Firewall pour les pages de connexion, inscription, et récupération de mot de passe
+        login:
+            pattern:   ^/(login$|register|resetting)  # Les adresses de ces pages sont login, register et resetting
+            anonymous: true                           # On autorise bien évidemment les anonymes sur ces pages !
+
+        # Firewall principal pour le reste de notre site
+        main:
+            pattern: ^/                      # ^/ = tout ce qui commence par / = tout notre site
+            form_login:                      # On définit notre méthode d'authentification
+                provider:    fos_userbundle  # On lit l'authentification au provider définit plus haut
+                remember_me: true            # On active la possibilité du "Se souvenir de moi" (désactivé par défaut)
+            remember_me:
+                key:         %secret%        # On définit la clé pour le remember_me (%secret% est un parametre de parameters.ini)
+            anonymous:       true            # On autorise les utilisateurs anonymes (non identifiés)
+            logout:          true            # On autorise la déconnexion manuelle (désactivé par défaut)
+
+    access_control:
+        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        #- { path: ^/_internal, roles: IS_AUTHENTICATED_ANONYMOUSLY, ip: 127.0.0.1 }
